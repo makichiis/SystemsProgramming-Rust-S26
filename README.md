@@ -2,7 +2,8 @@
 
 Homework submission and notes monorepo for my systems programming course. Links to each homework are listed:
 
-- [Homework Assignment 1 - Fahrenheit <-> Celsius Conversions](assignment-1.rs)
-- [Homework Assigment 2](assignment-2.rs)
-- [Homework Assignment 3](assignment-3.rs)
+- [Homework Assignment 1 - Temperature Converter](homework-1-1.rs)
+- [Homework Assignment 1 - Number Analyzer](homework-1-2.rs)
+- [Homework Assignment 1 - Guessing Game](homework-1-3.rs)
+
 
