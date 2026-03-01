@@ -1,3 +1,5 @@
+#![feature(string_replace_in_place)]
+
 use std::fs::File;
 use std::fmt::Write;
 use std::io::{Write as OtherWrite, BufReader, BufRead};
@@ -18,19 +20,22 @@ fn get_csv_escape(s: &String) -> String {
     s.replace(",", "\\,")
 }
 
+
 fn get_csv_fields(csv_string: &str) -> Vec<String> {
     let mut fields: Vec<String> = vec![];
         
     let mut escapes: bool = false;
     for tok in csv_string.split(",") {
         if escapes && !fields.is_empty() {
-            let _ = write!(fields.last_mut().unwrap(), "{}", tok.replace("\\", ","));
+            let _ = write!(fields.last_mut().unwrap(), "{}", tok.to_string());
+            escapes = false;
         } else {
-            fields.push(tok.replace("\\", ","));
+            fields.push(tok.to_string());
         }
 
-        if !tok.is_empty() {
-            escapes = tok.chars().last() == Some('\\');
+        if fields.last().unwrap().chars().last() == Some('\\') {
+            escapes = true;
+            fields.last_mut().unwrap().replace_last("\\", ",");
         }
     }
 
@@ -45,7 +50,15 @@ impl CSVSerializable for Book {
             return Err(format!("Invalid field count. Expected 3, got: {} from '{}'", fields.len(), csv_string));
         }
 
-        Ok(Book{ title: fields[0].clone(), author: fields[1].clone(), year: fields[2].parse::<u16>().unwrap() })
+        let title = fields[0].clone();
+        let author = fields[1].clone();
+        let year = fields[2].parse::<u16>();
+        if year.is_err() {
+            return Err(format!("Invalid value for field `year`: expected an integer, got {}", fields[2].clone()));
+        }
+        let year = year.unwrap();
+
+        Ok(Book{ title: title, author: author, year: year })
     }
 
     fn into_csv(&self) -> String {
@@ -72,6 +85,7 @@ fn load_books(filename: &str) -> Vec<Book> {
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
 
+    // TODO: detect content newlines 
     for entry in reader.lines() {
         retval.push(Book::from_csv(&entry.unwrap()).unwrap());
     }
@@ -84,6 +98,7 @@ fn main() {
         Book { title: "1984".to_string(), author: "George Orwell".to_string(), year: 1949 },
         Book { title: "To Kill a Mockingbird".to_string(), author: "Harper Lee".to_string(), year: 1960 },
         Book { title: "Me, Myself, and I".to_string(), author: "G-Eazy".to_string(), year: 2015 }, 
+        //Book { title: "icky\ntitle".to_string(), author: "null".to_string(), year: 2055 },
     ];
 
     save_books(&books, "books.txt");
