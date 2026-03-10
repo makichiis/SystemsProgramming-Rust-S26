@@ -7,4 +7,5 @@ Homework submission and notes monorepo for my systems programming course. Links 
 - [Homework Assignment 1 - Guessing Game](homework-1-3.rs)
 - [Homework Assignment 2 - Word Frequency](homework-2-1.rs)
 - [Homework Assignment 3 - Book Catalog](homework-3-1.rs)
+- [Homework Assignment 4 - File Operation Terminal Thing](homework-4-1.rs)
 
