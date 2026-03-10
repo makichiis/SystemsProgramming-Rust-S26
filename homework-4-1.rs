@@ -157,7 +157,7 @@ fn main() {
                 },
                 _ => {
                     let mut content = String::new();
-                    for s in args[1..].iter() {
+                    for s in args[2..].iter() {
                         content += s;
                         content += " ";
                     }
